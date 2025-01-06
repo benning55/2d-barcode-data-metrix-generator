@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import {QRCodeCanvas} from "qrcode.react"
+import { render } from "react-dom"
+import QRCode from "qrcode.react"
 
 const App = () => {
   const [supplierPartNumber, setSupplierPartNumber] = useState("")
@@ -13,14 +14,13 @@ const App = () => {
     const header = "[)>\u001e06\u001d"
     const trailer = "\u001e\u0004\r"
     const dataStream = [
-      `P${supplierPartNumber}`, // Customer Part Number (optional)
-      `1P${supplierPartNumber}`, // Supplier Part Number (required)
-      `Q${quantity}`, // Quantity (required)
-      dateCode ? `10D${dateCode}` : "10DN/T", // Date Code, 'N/T' if not traceable
-      lotCode ? `1T${lotCode}` : "1TN/T", // Lot Code, 'N/T' if not traceable
-      `4L${countryOfOrigin}`, // Country of Origin (required)
-    ].join("\u001d") // Separate each field with Group Separator (ASCII 29)
-
+      `P${supplierPartNumber}`,
+      `1P${supplierPartNumber}`,
+      `Q${quantity}`,
+      `10D${dateCode}`,
+      `1T${lotCode}`,
+      `4L${countryOfOrigin}`,
+    ]
     const formattedBarcode = `${header}${dataStream}${trailer}`
     setBarcodeData(formattedBarcode)
   }
@@ -89,7 +89,7 @@ const App = () => {
       {barcodeData && (
         <div style={{ marginTop: "30px" }}>
           <h2>Generated Barcode:</h2>
-          <QRCodeCanvas value={barcodeData} size={256} />
+          <QRCode value={barcodeData} size={256} />
           <p style={{ marginTop: "10px", wordWrap: "break-word" }}>
             {barcodeData}
           </p>
@@ -98,4 +98,5 @@ const App = () => {
     </div>
   )
 }
-export default App
+
+render(<App />, document.getElementById("root"))
